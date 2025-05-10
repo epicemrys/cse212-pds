@@ -1,3 +1,6 @@
+// Using dynamic arrays and solve complex problems.
+// Comments show a plan in enough detail that it could be implemented by another
+
 public static class Arrays
 {
     /// <summary>
@@ -8,12 +11,18 @@ public static class Arrays
     /// <returns>array of doubles that are the multiples of the supplied number</returns>
     public static double[] MultiplesOf(double number, int length)
     {
-        // TODO Problem 1 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        // Step 1: Here we create a new array of doubles with the size 'length'.
+        double[] multiplesArray = new double[length];
 
-        return []; // replace this return statement with your own
+        // Step 2: A loop is used to fill the array with the multiples.
+        // We will start from index 0 to 'length - 1' and calculate the multiple.
+        for (int i = 0; i < length; i++)
+        {
+            multiplesArray[i] = number * (i + 1); // 'i + 1' gives us the correct multiple starting from the first one.
+        }
+
+        // Step 3: Now it returns the populated array.
+        return multiplesArray;
     }
 
     /// <summary>
@@ -25,9 +34,24 @@ public static class Arrays
     /// </summary>
     public static void RotateListRight(List<int> data, int amount)
     {
-        // TODO Problem 2 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        // Step 1: We calculate the effective amount by taking the modulus with the list's count.
+        // This therefore handles cases where the amount is greater than the size of the list.
+        int count = data.Count;
+        amount = amount % count;
+
+        // Step 2: You store the last 'amount' elements in a temporary list
+        List<int> temp = data.GetRange(count - amount, amount);
+
+        // Step 3: Shift the original list elements to the right
+        for (int i = count - 1; i >= amount; i--)
+        {
+            data[i] = data[i - amount]; // No you move the elements to the right by using the 'amount'
+        }
+
+        // Step 4: You place the elements from the temporary list at the start
+        for (int i = 0; i < amount; i++)
+        {
+            data[i] = temp[i]; // Lastly, puts the stored elements back at the start of the list
+        }
     }
 }
