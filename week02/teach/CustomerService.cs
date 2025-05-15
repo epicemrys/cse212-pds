@@ -5,30 +5,35 @@
 public class CustomerService {
     public static void Run() {
         // Example code to see what's in the customer service queue:
-        // var cs = new CustomerService(10);
-        // Console.WriteLine(cs);
+        var cs = new CustomerService(10);  // Uncommented Error
+        Console.WriteLine(cs);  // Uncommented Error
 
-        // Test Cases
+        // test cases Added
 
-        // Test 1
-        // Scenario: 
-        // Expected Result: 
-        Console.WriteLine("Test 1");
-
-        // Defect(s) Found: 
-
+        // Test 1 - Adding a customer
+        Console.WriteLine("Test 1: Adding a customer");
+        cs.AddNewCustomer();
+        Console.WriteLine(cs);
         Console.WriteLine("=================");
 
-        // Test 2
-        // Scenario: 
-        // Expected Result: 
-        Console.WriteLine("Test 2");
-
-        // Defect(s) Found: 
-
+        // Test 2 - Serve a customer
+        Console.WriteLine("Test 2: Serving a customer");
+        cs.ServeCustomer();
+        Console.WriteLine(cs);
         Console.WriteLine("=================");
 
-        // Add more Test Cases As Needed Below
+        // Test 3 - Adding more customers beyond the max size
+        Console.WriteLine("Test 3: Adding customers beyond max size");
+        for (int i = 0; i < 12; i++) { // Assume 10 is the max size
+            cs.AddNewCustomer();
+        }
+        Console.WriteLine("=================");
+
+        // Test 4 - Serving from an empty queue
+        Console.WriteLine("Test 4: Serving from an empty queue");
+        cs = new CustomerService(10); // Create a new customer service with no customers
+        cs.ServeCustomer(); // Expect an error message
+        Console.WriteLine("=================");
     }
 
     private readonly List<Customer> _queue = new();
@@ -65,9 +70,9 @@ public class CustomerService {
     /// Prompt the user for the customer and problem information.  Put the 
     /// new record into the queue.
     /// </summary>
-    private void AddNewCustomer() {
+    public void AddNewCustomer() {
         // Verify there is room in the service queue
-        if (_queue.Count > _maxSize) {
+        if (_queue.Count >= _maxSize) {    //Verification Added
             Console.WriteLine("Maximum Number of Customers in Queue.");
             return;
         }
@@ -87,17 +92,20 @@ public class CustomerService {
     /// <summary>
     /// Dequeue the next customer and display the information.
     /// </summary>
-    private void ServeCustomer() {
-        _queue.RemoveAt(0);
+    public void ServeCustomer() {
+        if (_queue.Count == 0) {
+            Console.WriteLine("No customers to serve.");
+            return;
+        }
+
         var customer = _queue[0];
-        Console.WriteLine(customer);
+        _queue.RemoveAt(0);
+        Console.WriteLine($"Serving customer: {customer}");
     }
 
     /// <summary>
     /// Support the WriteLine function to provide a string representation of the
-    /// customer service queue object. This is useful for debugging. If you have a 
-    /// CustomerService object called cs, then you run Console.WriteLine(cs) to
-    /// see the contents.
+    /// customer service queue object. This is useful for debugging.
     /// </summary>
     /// <returns>A string representation of the queue</returns>
     public override string ToString() {
