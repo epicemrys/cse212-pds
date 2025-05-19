@@ -67,5 +67,27 @@ public class PriorityQueueTests
         }
     }
 
-    // Add more test cases as needed below.
+    [TestMethod]
+    public void TestPriorityQueue_MixedPriorities()
+    {
+        var priorityQueue = new PriorityQueue();
+        priorityQueue.Enqueue("Low", 1);
+        priorityQueue.Enqueue("Medium", 5);
+        priorityQueue.Enqueue("High", 10);
+        priorityQueue.Enqueue("Highest", 15);
+        priorityQueue.Enqueue("Medium2", 5); // Same priority as "Medium"
+
+        // Expected order: "Highest", "High", "Medium", "Medium2", "Low"
+        string firstDequeue = priorityQueue.Dequeue(); // Should return "Highest"
+        string secondDequeue = priorityQueue.Dequeue(); // Should return "High"
+        string thirdDequeue = priorityQueue.Dequeue(); // Should return "Medium"
+        string fourthDequeue = priorityQueue.Dequeue(); // Should return "Medium2"
+        string fifthDequeue = priorityQueue.Dequeue(); // Should return "Low"
+
+        Assert.AreEqual("Highest", firstDequeue);
+        Assert.AreEqual("High", secondDequeue);
+        Assert.AreEqual("Medium", thirdDequeue);
+        Assert.AreEqual("Medium2", fourthDequeue);
+        Assert.AreEqual("Low", fifthDequeue);
+    }
 }
