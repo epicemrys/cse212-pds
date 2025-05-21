@@ -3,7 +3,7 @@
 /// </summary>
 public class PersonQueue
 {
-    private readonly List<Person> _queue = new();
+    private readonly Queue<Person> _queue = new();
 
     public int Length => _queue.Count;
 
@@ -13,15 +13,24 @@ public class PersonQueue
     /// <param name="person">The person to add</param>
     public void Enqueue(Person person)
     {
-        _queue.Insert(0, person);
+        _queue.Enqueue(person);
     }
-
+    /// <summary>
+    /// Removes and returns the first person in the queue.
+    /// </summary>
     public Person Dequeue()
     {
-        var person = _queue[0];
-        _queue.RemoveAt(0);
-        return person;
+        if (IsEmpty())
+        {
+            throw new InvalidOperationException("The queue is empty.");
+        }
+        
+        return _queue.Dequeue();
     }
+
+    /// <summary>
+    /// Check if the queue is empty.
+    /// </summary>
 
     public bool IsEmpty()
     {
