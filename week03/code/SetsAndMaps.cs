@@ -1,3 +1,6 @@
+/// 5 Problems Complete
+/// Finish implementing the EarthquakeDailySummary function to return an array of formatted strings
+/// 
 using System.Text.Json;
 
 public static class SetsAndMaps
@@ -21,8 +24,28 @@ public static class SetsAndMaps
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
     public static string[] FindPairs(string[] words)
     {
-        // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        // TODO Problem 1 - ADD YOUR CODE HERE | Added Finds Pair of symmetric words
+        HashSet<string> wordSet = new HashSet<string>(words);
+        List<string> pairs = new List<string>();
+
+        foreach (var word in words)
+        {
+            char[] charArray = word.ToCharArray();
+            Array.Reverse(charArray); // This will give us the "symmetric" word
+            string reversedWord = new string(charArray);
+
+            // Check if the reversed word exists and is different than the original word
+            if (wordSet.Contains(reversedWord) && word != reversedWord)
+            {
+                // Create a pair string
+                pairs.Add($"{word} & {reversedWord}");
+                // Remove both words from the set so they aren't processed again
+                wordSet.Remove(word);
+                wordSet.Remove(reversedWord);
+            }
+        }
+
+        return pairs.ToArray();
     }
 
     /// <summary>
@@ -42,9 +65,20 @@ public static class SetsAndMaps
         foreach (var line in File.ReadLines(filename))
         {
             var fields = line.Split(",");
-            // TODO Problem 2 - ADD YOUR CODE HERE
+            // TODO Problem 2 - ADD YOUR CODE HERE | Added Summarizes degrees
+            if (fields.Length > 4)  // Ensure there are enough columns
+            {
+                var degree = fields[4].Trim();  // Column index for degree is 4
+                if (degrees.ContainsKey(degree))
+                {
+                    degrees[degree]++;
+                }
+                else
+                {
+                    degrees[degree] = 1;
+                }
+            }
         }
-
         return degrees;
     }
 
@@ -67,8 +101,34 @@ public static class SetsAndMaps
     public static bool IsAnagram(string word1, string word2)
     {
         // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        // Normalize input: remove spaces and convert to lower case
+        word1 = word1.Replace(" ", "").ToLower();
+        word2 = word2.Replace(" ", "").ToLower();
+
+        if (word1.Length != word2.Length)
+            return false;
+
+        var charCount = new Dictionary<char, int>();
+
+        foreach (var c in word1)
+        {
+            if (charCount.ContainsKey(c))
+                charCount[c]++;
+            else
+                charCount[c] = 1;
+        }
+
+        foreach (var c in word2)
+        {
+            if (!charCount.ContainsKey(c) || charCount[c] == 0)
+                return false;
+            else
+                charCount[c]--;
+        }
+
+        return true;
     }
+
 
     /// <summary>
     /// This function will read JSON (Javascript Object Notation) data from the 
@@ -84,6 +144,28 @@ public static class SetsAndMaps
     /// https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
     /// 
     /// </summary>
+    /// // TODO Problem 5:
+        // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
+        // on those classes so that the call to Deserialize above works properly.
+        // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
+        // 3. Return an array of these string descriptions.
+
+    public class FeatureCollection
+    {
+        public Feature[] Features { get; set; }
+    }
+
+    public class Feature
+    {
+        public Properties Properties { get; set; }
+    }
+
+    public class Properties
+    {
+        public string Place { get; set; }
+        public double Mag { get; set; }
+    }
+
     public static string[] EarthquakeDailySummary()
     {
         const string uri = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
@@ -96,11 +178,14 @@ public static class SetsAndMaps
 
         var featureCollection = JsonSerializer.Deserialize<FeatureCollection>(json, options);
 
-        // TODO Problem 5:
-        // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
-        // on those classes so that the call to Deserialize above works properly.
-        // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
-        // 3. Return an array of these string descriptions.
-        return [];
+
+        List<string> results = new List<string>();
+
+        foreach (var feature in featureCollection.Features)
+        {
+            results.Add($"{feature.Properties.Place} - Mag {feature.Properties.Mag}");
+        }
+
+        return results.ToArray();
     }
 }
